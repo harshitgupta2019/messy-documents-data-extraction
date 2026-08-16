@@ -56,30 +56,51 @@ export class DocumentsService {
       });
     }
   }
-  async all(q?: string) {
-  if (!q?.trim()) {
-    return this.m.find().sort({ createdAt: -1 }).lean();
+  async all(params: {
+  q?: string;
+  type?: string;
+  totalMin?: number;
+  totalMax?: number;
+}) {
+  const filter: any = {};
+
+  if (params.type) {
+    filter.documentType = params.type;
   }
 
-  const search = q.trim();
+  if (params.q?.trim()) {
+    const search = params.q.trim();
+
+    filter.$or = [
+      { filename: { $regex: search, $options: 'i' } },
+      { documentType: { $regex: search, $options: 'i' } },
+      { 'extractedData.vendor': { $regex: search, $options: 'i' } },
+      { 'extractedData.invoiceNumber': { $regex: search, $options: 'i' } },
+      { 'extractedData.accountHolder': { $regex: search, $options: 'i' } },
+      { 'extractedData.accountNumber': { $regex: search, $options: 'i' } },
+      { 'extractedData.name': { $regex: search, $options: 'i' } },
+      { 'extractedData.email': { $regex: search, $options: 'i' } },
+      { 'extractedData.location': { $regex: search, $options: 'i' } },
+      { 'extractedData.experience': { $regex: search, $options: 'i' } },
+      { 'extractedData.education': { $regex: search, $options: 'i' } },
+      { 'extractedData.skills': { $regex: search, $options: 'i' } },
+    ];
+  }
+
+  if (params.totalMin !== undefined || params.totalMax !== undefined) {
+    filter['extractedData.total'] = {};
+
+    if (params.totalMin !== undefined) {
+      filter['extractedData.total'].$gte = params.totalMin;
+    }
+
+    if (params.totalMax !== undefined) {
+      filter['extractedData.total'].$lte = params.totalMax;
+    }
+  }
 
   return this.m
-    .find({
-      $or: [
-        { filename: { $regex: search, $options: 'i' } },
-        { documentType: { $regex: search, $options: 'i' } },
-        { 'extractedData.vendor': { $regex: search, $options: 'i' } },
-        { 'extractedData.invoiceNumber': { $regex: search, $options: 'i' } },
-        { 'extractedData.accountHolder': { $regex: search, $options: 'i' } },
-        { 'extractedData.accountNumber': { $regex: search, $options: 'i' } },
-        { 'extractedData.name': { $regex: search, $options: 'i' } },
-        { 'extractedData.email': { $regex: search, $options: 'i' } },
-        { 'extractedData.location': { $regex: search, $options: 'i' } },
-        { 'extractedData.experience': { $regex: search, $options: 'i' } },
-        { 'extractedData.education': { $regex: search, $options: 'i' } },
-        { 'extractedData.skills': { $regex: search, $options: 'i' } },
-      ],
-    })
+    .find(filter)
     .sort({ createdAt: -1 })
     .lean();
 }
