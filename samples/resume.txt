@@ -1,0 +1,8 @@
+RESUME
+Name: Jane Doe
+Email: jane@example.com
+Phone: +91 9876543210
+Location: Bengaluru
+Skills: Node.js, Python, MongoDB, AWS
+Experience: Software Engineer at Acme Technologies, 2023-2026
+Education: B.Tech Computer Science

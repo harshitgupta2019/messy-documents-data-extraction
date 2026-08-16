@@ -1,0 +1,8 @@
+BANK STATEMENT
+Account Holder: Rahul Sharma
+Account Number: XXXX1234
+Statement Period: 2026-07-01 to 2026-07-31
+Opening Balance: 50000
+Credits: 50000
+Debits: 27500
+Closing Balance: 72500

@@ -1,0 +1,8 @@
+INVOICE
+Vendor: Acme Technologies Pvt Ltd
+Invoice Number: INV-10293
+Invoice Date: 2026-07-21
+Currency: INR
+Subtotal: 125000
+Tax: 22500
+Total: 147500
