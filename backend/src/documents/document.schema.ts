@@ -1,1 +1,13 @@
-import {Prop,Schema,SchemaFactory} from '@nestjs/mongoose';@Schema({timestamps:true})export class DocumentModel{@Prop({required:true})filename!:string;@Prop()documentType!:string;@Prop()status!:string;@Prop({type:Object})extractedData!:any;@Prop({type:Array})fields!:any[];@Prop({type:Object})validation!:any;@Prop({type:Object})processing!:any;@Prop()error?:string}export const DocumentSchema=SchemaFactory.createForClass(DocumentModel);
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+@Schema({ timestamps: true })
+export class DocumentModel {
+  @Prop({ required: true }) filename!: string;
+  @Prop() documentType!: string;
+  @Prop() status!: string;
+  @Prop({ type: Object }) extractedData!: any;
+  @Prop({ type: Array }) fields!: any[];
+  @Prop({ type: Object }) validation!: any;
+  @Prop({ type: Object }) processing!: any;
+  @Prop() error?: string;
+}
+export const DocumentSchema = SchemaFactory.createForClass(DocumentModel);

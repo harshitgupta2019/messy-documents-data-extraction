@@ -1,1 +1,55 @@
-import{Injectable}from'@nestjs/common';import{InjectModel}from'@nestjs/mongoose';import{Model}from'mongoose';import{DocumentModel}from'../documents/document.schema';@Injectable()export class QueryService{constructor(@InjectModel(DocumentModel.name)private m:Model<DocumentModel>){}parse(q:string){const x=q.toLowerCase(),f:any={status:{$in:['completed','needs_review']}},e:string[]=[];const type=x.includes('invoice')?'invoice':x.includes('bank')||x.includes('statement')?'bank_statement':x.includes('resume')?'resume':null;if(type){f.documentType=type;e.push(`document type is ${type}`)}const a=x.match(/(?:above|over|greater than|more than)\s*(?:₹|rs\.?|inr)?\s*([\d,]+)/i);if(a){const n=Number(a[1].replace(/,/g,''));f.$or=[{'extractedData.total':{$gt:n}},{'extractedData.closingBalance':{$gt:n}}];e.push(`amount > ${n}`)}const v=x.match(/from\s+([a-z0-9 .&_-]+?)(?:\s+(?:above|over|greater)|$)/i);if(v&&type==='invoice'){f['extractedData.vendor']={$regex:v[1].trim(),$options:'i'};e.push(`vendor contains ${v[1].trim()}`)}return{filter:f,explanation:e}}async query(q:string){const p=this.parse(q);const results=await this.m.find(p.filter).limit(100).lean();return{question:q,explanation:p.explanation,count:results.length,results}}}
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { DocumentModel } from "../documents/document.schema";
+@Injectable()
+export class QueryService {
+  constructor(
+    @InjectModel(DocumentModel.name) private m: Model<DocumentModel>,
+  ) {}
+  parse(q: string) {
+    const x = q.toLowerCase(),
+      f: any = { status: { $in: ["completed", "needs_review"] } },
+      e: string[] = [];
+    const type = x.includes("invoice")
+      ? "invoice"
+      : x.includes("bank") || x.includes("statement")
+        ? "bank_statement"
+        : x.includes("resume")
+          ? "resume"
+          : null;
+    if (type) {
+      f.documentType = type;
+      e.push(`document type is ${type}`);
+    }
+    const a = x.match(
+      /(?:above|over|greater than|more than)\s*(?:₹|rs\.?|inr)?\s*([\d,]+)/i,
+    );
+    if (a) {
+      const n = Number(a[1].replace(/,/g, ""));
+      f.$or = [
+        { "extractedData.total": { $gt: n } },
+        { "extractedData.closingBalance": { $gt: n } },
+      ];
+      e.push(`amount > ${n}`);
+    }
+    const v = x.match(
+      /from\s+([a-z0-9 .&_-]+?)(?:\s+(?:above|over|greater)|$)/i,
+    );
+    if (v && type === "invoice") {
+      f["extractedData.vendor"] = { $regex: v[1].trim(), $options: "i" };
+      e.push(`vendor contains ${v[1].trim()}`);
+    }
+    return { filter: f, explanation: e };
+  }
+  async query(q: string) {
+    const p = this.parse(q);
+    const results = await this.m.find(p.filter).limit(100).lean();
+    return {
+      question: q,
+      explanation: p.explanation,
+      count: results.length,
+      results,
+    };
+  }
+}

@@ -1,1 +1,9 @@
-import{Body,Controller,Post}from'@nestjs/common';import{QueryService}from'./query.service';@Controller('query')export class QueryController{constructor(private s:QueryService){}@Post()query(@Body('question')q:string){return this.s.query(q)}}
+import { Body, Controller, Post } from "@nestjs/common";
+import { QueryService } from "./query.service";
+@Controller("query")
+export class QueryController {
+  constructor(private s: QueryService) {}
+  @Post() query(@Body("question") q: string) {
+    return this.s.query(q);
+  }
+}

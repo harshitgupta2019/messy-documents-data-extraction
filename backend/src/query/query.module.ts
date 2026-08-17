@@ -1,1 +1,15 @@
-import{Module}from'@nestjs/common';import{MongooseModule}from'@nestjs/mongoose';import{DocumentModel,DocumentSchema}from'../documents/document.schema';import{QueryController}from'./query.controller';import{QueryService}from'./query.service';@Module({imports:[MongooseModule.forFeature([{name:DocumentModel.name,schema:DocumentSchema}])],controllers:[QueryController],providers:[QueryService]})export class QueryModule{}
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { DocumentModel, DocumentSchema } from "../documents/document.schema";
+import { QueryController } from "./query.controller";
+import { QueryService } from "./query.service";
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: DocumentModel.name, schema: DocumentSchema },
+    ]),
+  ],
+  controllers: [QueryController],
+  providers: [QueryService],
+})
+export class QueryModule {}
